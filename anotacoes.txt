@@ -1,0 +1,1 @@
+(quem enviou, para quem enviou, quando enviou e se foi ou não recebido)
