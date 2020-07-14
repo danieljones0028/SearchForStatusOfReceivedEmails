@@ -24,5 +24,6 @@ else:
     final = int(final)
     pass
 
+files = file_list.list_files(inicio, final)
 
-# print file_list.list_files(inicio, final)
+print(files)
