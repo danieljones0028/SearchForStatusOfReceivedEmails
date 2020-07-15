@@ -104,7 +104,9 @@ def read_received_from(data_list):
                                 if msi in line:
                                     s = re.findall('postfix/qmgr', l)
                                     if s:
-                                        print(line)
+                                        if not 'removed' == line[-1]:
+# ['Mar', '12', '17:17:27', 'zimbra', 'postfix/qmgr[17874]:', '2F287E2982:', 'from=<nfe@hypera.com.br>,', 'size=54390,', 'nrcpt=1', '(queue', 'active)']
+                                            print(line[6])
 
 
     except TypeError as e:
