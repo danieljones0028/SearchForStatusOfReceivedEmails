@@ -26,4 +26,4 @@ else:
     pass
 
 
-read_gzfiles.read_gz(file_list.list_files(inicio, final))
+read_gzfiles.read_received_gz(file_list.list_files(inicio, final))
