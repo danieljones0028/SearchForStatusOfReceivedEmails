@@ -25,5 +25,5 @@ else:
     final = int(final)
     pass
 
-
-read_gzfiles.read_received_gz(file_list.list_files(inicio, final))
+# Emails recebidos e descartados
+read_gzfiles.read_received_to(file_list.list_files(inicio, final))

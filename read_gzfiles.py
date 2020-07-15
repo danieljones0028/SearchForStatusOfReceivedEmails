@@ -10,10 +10,13 @@ from default_list import emails
 # TODO: Criar validação para DEB e RPM
 log_dir = '/var/log/'
 
-l = ['zimbra.log.122.gz', 'zimbra.log.123.gz', 'zimbra.log.124.gz', 'zimbra.log.125.gz', 'zimbra.log.126.gz']
+l = ['zimbra.log.122.gz']
+# l = ['zimbra.log.122.gz', 'zimbra.log.123.gz', 'zimbra.log.124.gz', 'zimbra.log.125.gz', 'zimbra.log.126.gz']
+
+# TODO criar metodo que selecione ao executar o e-mail que sera verificado
 mail_address = emails[13]
 
-def read_received_gz(data_list):
+def read_received_to(data_list):
 
     mail_ok = []
     mail_spam = []
@@ -67,3 +70,45 @@ def read_received_gz(data_list):
 
     except TypeError as e:
         print(e)
+
+def read_received_from(data_list):
+
+    mail_ok = []
+    mail_spam = []
+    msgok_id = []
+    msgspam_id = []
+    remetentes = []# Adiciona endereço de remetente sempre que ele aperecer
+
+    try:
+        for file in data_list:
+            if os.path.exists('%s%s' % (log_dir, file)):
+                with gzip.open('%s%s' % (log_dir, file), 'r') as file_path:
+                    # TODO: pegar primeira e ultima linha do arquivo para determinar o periodo que o mesmo tem os registros.
+                    file_path = file_path.read()
+                    for item in file_path.splitlines():
+                        line = item.split(" ")
+                        for l in line:
+                            s = re.findall('postfix/lmtp', l)
+                            if s:
+                                if mail_address in line:
+# ['Mar', '12', '17:06:21', 'zimbra', 'postfix/lmtp[9577]:', '67B7CE28D8:', 'to=<santil.santos@nazaria.com.br>,', 'relay=zimbra.nazaria.com.br[189.80.247.203]:7025,', 'delay=0.66,', 'delays=0.1/0/0.1/0.46,', 'dsn=2.1.5,', 'status=sent', '(250', '2.1.5', 'Delivery', 'OK)']
+                                    if line[-1] == 'OK)':
+                                        msgok_id.append(line[5])
+                                    elif line[-1] == 'spam)':
+                                        msgspam_id.append(line[5])
+# COLETAR REMETENTES
+                    for item in file_path.splitlines():
+                        line = item.split(" ")
+                        for msi in msgok_id:
+                            for l in line:
+                                if msi in line:
+                                    s = re.findall('postfix/qmgr', l)
+                                    if s:
+                                        print(line)
+
+
+    except TypeError as e:
+        pass
+
+# read_received_to(l)
+read_received_from(l)
