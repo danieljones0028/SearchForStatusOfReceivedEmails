@@ -7,6 +7,7 @@
 
 import os
 import file_list
+import read_gzfiles
 
 inicio = raw_input('Coloque o numero incial aqui: ')
 
@@ -24,6 +25,5 @@ else:
     final = int(final)
     pass
 
-files = file_list.list_files(inicio, final)
 
-print(files)
+read_gzfiles.read_gz(file_list.list_files(inicio, final))

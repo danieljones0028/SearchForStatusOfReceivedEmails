@@ -1,20 +1,15 @@
 # coding: utf-8
 # Uma forma de ler os arquivos GZ, 
 # ou via class ou via os.popen ou subprocess
-
 import os
 import gzip
 
-# l = ['zimbra.log.1.gz', 'zimbra.log.2.gz', 'zimbra.log.3.gz']
-
-l = ['zimbra.log.123.gz']
+from default_list import emails
 
 # TODO: Criar validação para DEB e RPM
 log_dir = '/var/log/'
 
 def read_gz(data_list):
-
-    emails = ['to=<nfe1@nazaria.com.br>', 'to=<nfe2@nazaria.com.br>', 'to=<nfe3@nazaria.com.br>', 'to=<nfe4@nazaria.com.br>', 'to=<nfe5@nazaria.com.br>', 'to=<nfe6@nazaria.com.br>', 'to=<nfe7@nazaria.com.br>', 'to=<nfe8@nazaria.com.br>', 'to=<nfe9@nazaria.com.br>', 'to=<nfe10@nazaria.com.br>', 'to=<nfe11@nazaria.com.br>', 'to=<nfe12@nazaria.com.br>', 'to=<nfe13@nazaria.com.br>', 'to=<nfe14@nazaria.com.br>', 'to=<nfe15@nazaria.com.br>', 'to=<nfe16@nazaria.com.br>', 'to=<nfe17@nazaria.com.br>', 'to=<recepcionistarn@nazaria.com.br>']
 
     remetente = [] # Adiciona apenas 1x um endereço de remetente
     remetentes = []# Adiciona endereço de remetente sempre que ele aperecer
@@ -28,35 +23,21 @@ def read_gz(data_list):
 
                     for item in file_path.splitlines():
                         line = item.split(" ")
-                        mes = line[0]
-                        day = line[1]
-                        hora = line[2]
+
+                        # emails[13] é o endereço do destinatario na linha da lista | to=<destination@email.com>
                         if emails[13] in line:
-                            remetentes.append(line[16])
-                            if not line[16] in remetente:
-                                remetente.append(line[16])
-                            # print(line)
-                            # print(len(line))
-                            # print(line[16], line[17])
-                            # if emails[-1] in line:
-                                # print(len(line))
-                                # print(line)
-#                                 print("""
-# From Host: %s
-# Hostname: %s
-# Remetente: %s
-# Destinatario: %s
-# """) % (line[9], line[19], line[20], line[21])
+                            # tratando o endereço do rementente para que fique mais amigavel a leitura
+                            remetentes_item = line[16].replace("from=<", "").replace(">", "")
+                            remetentes.append(remetentes_item)
+                            if not remetentes_item in remetente:
+                                remetente.append(remetentes_item)
 
             else:
                 print('fiz + nao tinha nada')
-        print(len(remetentes))
-        print(len(remetente))
 
         for rem in remetente:
-            print remetentes.count(rem)
+            s = remetentes.count(rem)
+            print('%s   = %s' % (s, rem))
 
     except TypeError as e:
         print(e)
-
-read_gz(l)
