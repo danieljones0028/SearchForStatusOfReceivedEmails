@@ -6,3 +6,4 @@ zcat /var/log/zimbra.log.122.gz | grep 'postfix/lmtp' | grep 'to=<nfe14@nazaria.
 # COLETA ENDEREÇO DO REMETENTE
 zcat /var/log/zimbra.log.122.gz | grep 'EF154E2912:' | grep 'postfix/qmgr' | grep -v 'removed' | awk '{print $7}' | awk -F"<" '{print $2}' | sed 's/>,//g'
 
+# POR DADOS EM UM BANCO PARA MODIFICAR/MELHORAR AS CONSULTAS
