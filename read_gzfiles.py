@@ -44,8 +44,7 @@ def read_received_to(data_list, mail_address):
 # ['Mar', '12', '17:06:21', 'zimbra', 'postfix/lmtp[9577]:', '67B7CE28D8:', 'to=<santil.santos@nazaria.com.br>,', 'relay=zimbra.nazaria.com.br[189.80.247.203]:7025,', 'delay=0.66,', 'delays=0.1/0/0.1/0.46,', 'dsn=2.1.5,', 'status=sent', '(250', '2.1.5', 'Delivery', 'OK)']
                                     if line[-1] == 'OK)':
                                         mail_ok.append(line[-1])
-                                    # elif line[-1] == 'spam)':
-                                    #     mail_spam.append(line[-1])
+
             else:
                 print('fiz + nao tinha nada')
 
@@ -65,8 +64,7 @@ def read_received_to(data_list, mail_address):
 # ['Mar', '12', '17:06:21', 'zimbra', 'postfix/lmtp[9577]:', '67B7CE28D8:', 'to=<santil.santos@nazaria.com.br>,', 'relay=zimbra.nazaria.com.br[189.80.247.203]:7025,', 'delay=0.66,', 'delays=0.1/0/0.1/0.46,', 'dsn=2.1.5,', 'status=sent', '(250', '2.1.5', 'Delivery', 'OK)']
                                     if line[-1] == 'spam)':
                                         mail_spam.append(line[-1])
-                                    # elif line[-1] == 'spam)':
-                                    #     mail_spam.append(line[-1])
+
             else:
                 print('fiz + nao tinha nada')
 
@@ -96,26 +94,6 @@ def read_received_to(data_list, mail_address):
         print(e)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def read_received_from(data_list, mail_address):
 
     mail_ok = []
@@ -134,7 +112,8 @@ def read_received_from(data_list, mail_address):
                     for item in file_path.splitlines():
                         line = item.split(" ")
                         for l in line:
-                            s = re.findall('postfix/lmtp', l)
+                            # s = re.findall('postfix/lmtp', l)
+                            s = re.findall('postfix/smtp', l)
                             if s:
                                 if mail_address in line:
 # ['Mar', '12', '17:06:21', 'zimbra', 'postfix/lmtp[9577]:', '67B7CE28D8:', 'to=<santil.santos@nazaria.com.br>,', 'relay=zimbra.nazaria.com.br[189.80.247.203]:7025,', 'delay=0.66,', 'delays=0.1/0/0.1/0.46,', 'dsn=2.1.5,', 'status=sent', '(250', '2.1.5', 'Delivery', 'OK)']
