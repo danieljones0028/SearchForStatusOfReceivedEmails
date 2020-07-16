@@ -15,6 +15,7 @@ l = ['zimbra.log.122.gz']
 
 # TODO criar metodo que selecione ao executar o e-mail que sera verificado
 mail_address = emails[13]
+# mail_address = emails[-1]
 
 def read_received_to(data_list):
 
@@ -77,7 +78,8 @@ def read_received_from(data_list):
     mail_spam = []
     msgok_id = []
     msgspam_id = []
-    remetentes = []# Adiciona endereço de remetente sempre que ele aperecer
+    from_ok = []
+    from_spam = []
 
     try:
         for file in data_list:
@@ -96,7 +98,7 @@ def read_received_from(data_list):
                                         msgok_id.append(line[5])
                                     elif line[-1] == 'spam)':
                                         msgspam_id.append(line[5])
-# COLETAR REMETENTES
+# COLETAR REMETENTES ENTREGUES
                     for item in file_path.splitlines():
                         line = item.split(" ")
                         for msi in msgok_id:
@@ -106,8 +108,22 @@ def read_received_from(data_list):
                                     if s:
                                         if not 'removed' == line[-1]:
 # ['Mar', '12', '17:17:27', 'zimbra', 'postfix/qmgr[17874]:', '2F287E2982:', 'from=<nfe@hypera.com.br>,', 'size=54390,', 'nrcpt=1', '(queue', 'active)']
-                                            print(line[6])
+                                            from_address = line[6].replace('from=<', '').replace('>,', '')
+                                            from_ok.append(from_address)
+                                            if not from_address in mail_ok:
+                                                mail_ok.append(from_address)
+# # COLETA REMETENTES DESCARTADOS
 
+            # print(from_ok)
+            if len(mail_ok) > 0:
+                list(mail_address)
+                m_a = mail_address[4:-1]
+                # EXPORT ENDEREÇOS DOS REMETENTES E QUANTIDADE DE VEZES QUE FORAM ENVIADOS
+                print('')
+                print(m_a)
+                print('')
+                for item in mail_ok:
+                    print('%s: %s' % (item, from_ok.count(item)))
 
     except TypeError as e:
         pass
