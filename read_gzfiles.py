@@ -10,7 +10,7 @@ from default_list import emails
 # TODO: Criar validação para DEB e RPM
 log_dir = '/var/log/'
 
-l = ['zimbra.log.122.gz']
+# l = ['zimbra.log.122.gz']
 # l = ['zimbra.log.122.gz', 'zimbra.log.123.gz', 'zimbra.log.124.gz', 'zimbra.log.125.gz', 'zimbra.log.126.gz']
 
 # TODO criar metodo que selecione ao executar o e-mail que sera verificado
@@ -95,30 +95,29 @@ def read_received_from(data_list):
                                 if mail_address in line:
 # ['Mar', '12', '17:06:21', 'zimbra', 'postfix/lmtp[9577]:', '67B7CE28D8:', 'to=<santil.santos@nazaria.com.br>,', 'relay=zimbra.nazaria.com.br[189.80.247.203]:7025,', 'delay=0.66,', 'delays=0.1/0/0.1/0.46,', 'dsn=2.1.5,', 'status=sent', '(250', '2.1.5', 'Delivery', 'OK)']
                                     if line[-1] == 'OK)':
-                                        msgok_id.append(line[5])
+                                        msgok_id.append(line[5]) # Coleta MAILID 67B7CE28D8:
                                     elif line[-1] == 'spam)':
                                         msgspam_id.append(line[5])
 # COLETAR REMETENTES ENTREGUES
                     for item in file_path.splitlines():
                         line = item.split(" ")
-                        for msi in msgok_id:
-                            for l in line:
+                        # TODO PROCURO UM ITEM DE UMA LISTA msgok_id DENTRO DE ITENS DE OUTRA LISTA, E A FORAM QUE CONSEGUI FOI ESSA. INFELIZMENTE ESTA DEMORANDO CERCA DE 1MIN1/2 PARA TER O RETORNO.
+                        for msi in msgok_id: # MAILID
+                            for l in line:   # line LINHA DO ARQUIVO DE LOG l CADA ITEM DA LINHA DO ARQUIVO. EU PRECISO FAZER ISSO PARA QUE NA BUSCA COM O re.findall EU CONSIGA ENCONTRAR O TEXT QUE QUERO EM EXPECIFICO.
                                 if msi in line:
                                     s = re.findall('postfix/qmgr', l)
-                                    if s:
+                                    if s: # O FINAL DA BUSCA s ME RETORNA DUAS LINHAS DE ARQUIVOS, UMA INUTIL QUE SEU ULTIMO ITEM É removerd E A OUTRA COM A INFORMACAO QUE BUSCO from=<email@domain.com>,
                                         if not 'removed' == line[-1]:
 # ['Mar', '12', '17:17:27', 'zimbra', 'postfix/qmgr[17874]:', '2F287E2982:', 'from=<nfe@hypera.com.br>,', 'size=54390,', 'nrcpt=1', '(queue', 'active)']
                                             from_address = line[6].replace('from=<', '').replace('>,', '')
-                                            from_ok.append(from_address)
+                                            from_ok.append(from_address) # Add todos os remetentes no from_ok para comparar as quantidades depois tento o from_address como base unica, por isso o if not contiver no from_address
                                             if not from_address in mail_ok:
                                                 mail_ok.append(from_address)
-# # COLETA REMETENTES DESCARTADOS
-
-            # print(from_ok)
+# EXIBINDO REMETENTES E QUANTIDADE DE E-MAILS RECEBIDOS POR REMETENTE
             if len(mail_ok) > 0:
                 list(mail_address)
                 m_a = mail_address[4:-1]
-                # EXPORT ENDEREÇOS DOS REMETENTES E QUANTIDADE DE VEZES QUE FORAM ENVIADOS
+
                 print('')
                 print(m_a)
                 print('')
@@ -129,4 +128,4 @@ def read_received_from(data_list):
         pass
 
 # read_received_to(l)
-read_received_from(l)
+# read_received_from(l)

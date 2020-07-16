@@ -1,0 +1,15 @@
+read_received_from(l)
+
+nfe14@nazaria.com.br>
+
+prvs=0340f238e6=nfe.comercial.medley@sanofi.com: 11
+aspengrc@aspenpharma.com: 1
+nfesap@marjanfarma.com.br: 4
+faturamento@hebron.com.br: 1
+nfe@hypera.com.br: 2
+prvs=333a0fa6f=faturamento@tevabrasil.com.br: 2
+prvs=333c31356=nfe.sdb@servier.com: 1
+nfe@cifarma.ind.br: 1
+matheus.campos@nazaria.com.br: 1
+diego.costa@nazaria.com.br: 1
+centralrelacionamentocliente@ncfarma.com.br: 1
