@@ -105,9 +105,20 @@ def read_received_from(data_list, mail_address):
             if os.path.exists('%s%s' % (log_dir, file)):
                 with gzip.open('%s%s' % (log_dir, file), 'r') as file_path:
                     # TODO: pegar primeira e ultima linha do arquivo para determinar o periodo que o mesmo tem os registros.
-                    file_path = file_path.read()
-                    for item in file_path.splitlines():
+                    file_path = file_path.read().splitlines()
+                    print('')
+                    # print(file_path)
+                    print('')
+                    for item in file_path:
+                        z = re.findall('BA02BE2AB6: from=<', item)
+                        if z:
+                            print(item)
+                            print(type(item))
+                            i = item.split(" ")
+                            print(i[6])
+                    # for item in file_path.splitlines():
                         line = item.split(" ")
+                        # print(len(line))
                         for l in line:
                             s = re.findall('postfix/lmtp', l)
                             # s = re.findall('postfix/qmgr', l)
@@ -116,50 +127,55 @@ def read_received_from(data_list, mail_address):
 # ['Mar', '12', '17:06:21', 'zimbra', 'postfix/lmtp[9577]:', '67B7CE28D8:', 'to=<santil.santos@nazaria.com.br>,', 'relay=zimbra.nazaria.com.br[189.80.247.203]:7025,', 'delay=0.66,', 'delays=0.1/0/0.1/0.46,', 'dsn=2.1.5,', 'status=sent', '(250', '2.1.5', 'Delivery', 'OK)']
                                     if line[-1] == 'OK)':
                                         msgid_ok.append(line[5])
+                    try:
+                        print(len(line))
+                    except TypeError as e:
+                        print(e)
     except TypeError as e:
         print('###############PAUPAUPAU###################')
         print(e)
     print('################OK####################')
     print(msgid_ok)
     print('################OK####################')
-# # TODO criar funcao pra chamar so a lista e poupar linhas #####################
-#     try:
-#         for file in data_list:
-#             if os.path.exists('%s%s' % (log_dir, file)):
-#                 with gzip.open('%s%s' % (log_dir, file), 'r') as file_path:
-#                     # TODO: pegar primeira e ultima linha do arquivo para determinar o periodo que o mesmo tem os registros.
-#                     file_path = file_path.read()
-#                     for item in file_path.splitlines():
-#                         line = item.split(" ")
-# ###############################################################################
-#                         for l in line:
-#                             s = re.findall('postfix/smtp', l)
-#                             if s:
-#                                 if mail_address in line:
-# # ['Mar', '12', '20:25:24', 'zimbra', 'postfix/smtp[29929]:', 'A16F1E2897:', 'to=<nfe3@nazaria.com.br>,', 'orig_to=<ti.comunicado@nazaria.com.br>,', 'relay=127.0.0.1[127.0.0.1]:10024,', 'delay=8.9,', 'delays=2/3.4/0.01/3.6,', 'dsn=2.7.0,', 'status=sent', '(250', '2.7.0', 'Ok,', 'discarded,', 'id=29060-17', '-', 'spam)']
-#                                     if line[-1] == 'spam)':
-#                                         msgid_spam.append(line[5])
-#     except TypeError as e:
-#         print('###############PAUPAUPAU###################')
-#         print(e)
-    print('################SPAM####################')
-    print(msgid_spam)
-    print(len(msgid_ok))
-    print(len(msgid_spam))
-    print('################SPAM####################')
+# TODO criar funcao pra chamar so a lista e poupar linhas #####################
     try:
-        cont = 0
-        count = 0
         for file in data_list:
             if os.path.exists('%s%s' % (log_dir, file)):
                 with gzip.open('%s%s' % (log_dir, file), 'r') as file_path:
                     # TODO: pegar primeira e ultima linha do arquivo para determinar o periodo que o mesmo tem os registros.
-                    file_path = file_path.read().splitlines()
-                    for item in file_path:
-                        # Transformando linha do arquivo em lista
+                    file_path = file_path.read()
+                    for item in file_path.splitlines():
                         line = item.split(" ")
-                        count = count +1
-                        print('loop do msgid ############: %s' % count)
+###############################################################################
+                        for l in line:
+                            s = re.findall('postfix/smtp', l)
+                            if s:
+                                if mail_address in line:
+# ['Mar', '12', '20:25:24', 'zimbra', 'postfix/smtp[29929]:', 'A16F1E2897:', 'to=<nfe3@nazaria.com.br>,', 'orig_to=<ti.comunicado@nazaria.com.br>,', 'relay=127.0.0.1[127.0.0.1]:10024,', 'delay=8.9,', 'delays=2/3.4/0.01/3.6,', 'dsn=2.7.0,', 'status=sent', '(250', '2.7.0', 'Ok,', 'discarded,', 'id=29060-17', '-', 'spam)']
+                                    if line[-1] == 'spam)':
+                                        msgid_spam.append(line[5])
+    except TypeError as e:
+        print('###############PAUPAUPAU###################')
+        print(e)
+    
+    print('################SPAM####################')
+    print(len(msgid_ok))
+    print(msgid_spam)
+    print('################SPAM####################')
+
+    # try:
+    #     cont = 0
+    #     count = 0
+    #     for file in data_list:
+    #         if os.path.exists('%s%s' % (log_dir, file)):
+    #             with gzip.open('%s%s' % (log_dir, file), 'r') as file_path:
+    #                 # TODO: pegar primeira e ultima linha do arquivo para determinar o periodo que o mesmo tem os registros.
+    #                 file_path = file_path.read().splitlines()
+    #                 for item in file_path:
+    #                     # Transformando linha do arquivo em lista
+    #                     line = item.split(" ")
+    #                     count = count +1
+    #                     print('loop do msgid ############: %s' % count)
                         # for msgid in msgid_ok:
                         #     cont = cont + 1
                         #     print('loop do msgid: %s' % cont)
@@ -188,9 +204,9 @@ def read_received_from(data_list, mail_address):
         #         c = remetentes_ok.count(r)
         #         print('%s: %s' % (r, c))
 
-    except TypeError as e:
-        print('################DEU#####################')
-        print(e)
+    # except TypeError as e:
+    #     print('################DEU#####################')
+    #     print(e)
 # # SPAM
 #     try:
 #         cont = 0
