@@ -98,7 +98,9 @@ def read_received_from(data_list, mail_address):
 
     msgid_ok = []
     msgid_spam = []
+    remetente_ok = []
     remetente = []
+    remetentes_ok = []
     remetentes = []
 
     try:
@@ -138,11 +140,42 @@ def read_received_from(data_list, mail_address):
 # ['Mar', '12', '20:25:24', 'zimbra', 'postfix/smtp[29929]:', 'A16F1E2897:', 'to=<nfe3@nazaria.com.br>,', 'orig_to=<ti.comunicado@nazaria.com.br>,', 'relay=127.0.0.1[127.0.0.1]:10024,', 'delay=8.9,', 'delays=2/3.4/0.01/3.6,', 'dsn=2.7.0,', 'status=sent', '(250', '2.7.0', 'Ok,', 'discarded,', 'id=29060-17', '-', 'spam)']
                                     if line[-1] == 'spam)':
                                         msgid_spam.append(line[5])
-
     except TypeError as e:
         print('###############PAUPAUPAU###################')
         print(e)
 
+    try:
+        for file in data_list:
+            if os.path.exists('%s%s' % (log_dir, file)):
+                with gzip.open('%s%s' % (log_dir, file), 'r') as file_path:
+                    # TODO: pegar primeira e ultima linha do arquivo para determinar o periodo que o mesmo tem os registros.
+                    file_path = file_path.read()
+                    for item in file_path.splitlines():
+                        line = item.split(" ")
+                        for msgid in msgid_ok:
+                            for l in line:
+                                s = re.findall(msgid, l)
+                                if s:
+                                    for i in line:
+                                        se = re.findall('from=<', i)
+                                        if se:
+                                            rem_ok = line[6].replace('from=<', '').replace('>,', '')
+                                            remetentes_ok.append(rem_ok)
+                                            if not rem_ok in remetente_ok:
+                                                remetente_ok.append(rem_ok)
+
+        if remetentes_ok > 0:
+            print('')
+            print('Remetentes aceitos:')
+            print('')
+            for r in remetente_ok:
+                c = remetentes_ok.count(r)
+                print('%s: %s' % (r, c))
+
+    except TypeError as e:
+        print('################DEU#####################')
+        print(e)
+# SPAM
     try:
         for file in data_list:
             if os.path.exists('%s%s' % (log_dir, file)):
@@ -170,11 +203,11 @@ def read_received_from(data_list, mail_address):
             for r in remetente:
                 c = remetentes.count(r)
                 print('%s: %s' % (r, c))
+        print('')
 
     except TypeError as e:
         print('################DEU#####################')
         print(e)
-
 
 
 read_received_from(arquivo, 'to=<nfe3@nazaria.com.br>,')
