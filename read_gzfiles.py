@@ -5,18 +5,15 @@ import os
 import re
 import gzip
 
-# from default_list import emails
-
+from default_list import emails
 
 # TODO: Criar validação para DEB e RPM
 log_dir = '/var/log/'
 
-# l = ['zimbra.log.122.gz']
-# l = ['zimbra.log.122.gz', 'zimbra.log.123.gz', 'zimbra.log.124.gz', 'zimbra.log.125.gz', 'zimbra.log.126.gz']
+arquivo = ['zimbra.log.122.gz']
 
 # TODO criar metodo que selecione ao executar o e-mail que sera verificado
-# mail_address = emails[13]
-# mail_address = emails[-1]
+mail_address = emails[3]
 
 def read_received_to(data_list, mail_address):
 
@@ -42,6 +39,7 @@ def read_received_to(data_list, mail_address):
                             if s:
                                 if mail_address in line:
 # ['Mar', '12', '17:06:21', 'zimbra', 'postfix/lmtp[9577]:', '67B7CE28D8:', 'to=<santil.santos@nazaria.com.br>,', 'relay=zimbra.nazaria.com.br[189.80.247.203]:7025,', 'delay=0.66,', 'delays=0.1/0/0.1/0.46,', 'dsn=2.1.5,', 'status=sent', '(250', '2.1.5', 'Delivery', 'OK)']
+
                                     if line[-1] == 'OK)':
                                         mail_ok.append(line[-1])
 
@@ -91,17 +89,17 @@ def read_received_to(data_list, mail_address):
             print('')
 
     except TypeError as e:
+        print('#############################DEU PAU###########################')
         print(e)
 
+###############################################################################
 
 def read_received_from(data_list, mail_address):
 
-    mail_ok = []
-    mail_spam = []
-    msgok_id = []
-    msgspam_id = []
-    from_ok = []
-    from_spam = []
+    msgid_ok = []
+    msgid_spam = []
+    remetente = []
+    remetentes = []
 
     try:
         for file in data_list:
@@ -112,43 +110,71 @@ def read_received_from(data_list, mail_address):
                     for item in file_path.splitlines():
                         line = item.split(" ")
                         for l in line:
-                            # s = re.findall('postfix/lmtp', l)
-                            s = re.findall('postfix/smtp', l)
+                            s = re.findall('postfix/lmtp', l)
+                            # s = re.findall('postfix/qmgr', l)
                             if s:
                                 if mail_address in line:
 # ['Mar', '12', '17:06:21', 'zimbra', 'postfix/lmtp[9577]:', '67B7CE28D8:', 'to=<santil.santos@nazaria.com.br>,', 'relay=zimbra.nazaria.com.br[189.80.247.203]:7025,', 'delay=0.66,', 'delays=0.1/0/0.1/0.46,', 'dsn=2.1.5,', 'status=sent', '(250', '2.1.5', 'Delivery', 'OK)']
                                     if line[-1] == 'OK)':
-                                        msgok_id.append(line[5]) # Coleta MAILID 67B7CE28D8:
-                                    elif line[-1] == 'spam)':
-                                        msgspam_id.append(line[5])
-# COLETAR REMETENTES ENTREGUES
-                    for item in file_path.splitlines():
-                        line = item.split(" ")
-                        # TODO PROCURO UM ITEM DE UMA LISTA msgok_id DENTRO DE ITENS DE OUTRA LISTA, E A FORAM QUE CONSEGUI FOI ESSA. INFELIZMENTE ESTA DEMORANDO CERCA DE 1MIN1/2 PARA TER O RETORNO.
-                        for msi in msgok_id: # MAILID
-                            for l in line:   # line LINHA DO ARQUIVO DE LOG l CADA ITEM DA LINHA DO ARQUIVO. EU PRECISO FAZER ISSO PARA QUE NA BUSCA COM O re.findall EU CONSIGA ENCONTRAR O TEXT QUE QUERO EM EXPECIFICO.
-                                if msi in line:
-                                    s = re.findall('postfix/qmgr', l)
-                                    if s: # O FINAL DA BUSCA s ME RETORNA DUAS LINHAS DE ARQUIVOS, UMA INUTIL QUE SEU ULTIMO ITEM É removerd E A OUTRA COM A INFORMACAO QUE BUSCO from=<email@domain.com>,
-                                        if not 'removed' == line[-1]:
-# ['Mar', '12', '17:17:27', 'zimbra', 'postfix/qmgr[17874]:', '2F287E2982:', 'from=<nfe@hypera.com.br>,', 'size=54390,', 'nrcpt=1', '(queue', 'active)']
-                                            from_address = line[6].replace('from=<', '').replace('>,', '')
-                                            from_ok.append(from_address) # Add todos os remetentes no from_ok para comparar as quantidades depois tento o from_address como base unica, por isso o if not contiver no from_address
-                                            if not from_address in mail_ok:
-                                                mail_ok.append(from_address)
-# EXIBINDO REMETENTES E QUANTIDADE DE E-MAILS RECEBIDOS POR REMETENTE
-            if len(mail_ok) > 0:
-                list(mail_address)
-                m_a = mail_address[4:-1]
-
-                print('')
-                print(m_a)
-                print('')
-                for item in mail_ok:
-                    print('%s: %s' % (item, from_ok.count(item)))
+                                        msgid_ok.append(line[5])
 
     except TypeError as e:
-        pass
+        print('###############PAUPAUPAU###################')
+        print(e)
+# TODO criar funcao pra chamar so a lista e poupar linhas #####################
+    try:
+        for file in data_list:
+            if os.path.exists('%s%s' % (log_dir, file)):
+                with gzip.open('%s%s' % (log_dir, file), 'r') as file_path:
+                    # TODO: pegar primeira e ultima linha do arquivo para determinar o periodo que o mesmo tem os registros.
+                    file_path = file_path.read()
+                    for item in file_path.splitlines():
+                        line = item.split(" ")
+###############################################################################
+                        for l in line:
+                            s = re.findall('postfix/smtp', l)
+                            if s:
+                                if mail_address in line:
+# ['Mar', '12', '20:25:24', 'zimbra', 'postfix/smtp[29929]:', 'A16F1E2897:', 'to=<nfe3@nazaria.com.br>,', 'orig_to=<ti.comunicado@nazaria.com.br>,', 'relay=127.0.0.1[127.0.0.1]:10024,', 'delay=8.9,', 'delays=2/3.4/0.01/3.6,', 'dsn=2.7.0,', 'status=sent', '(250', '2.7.0', 'Ok,', 'discarded,', 'id=29060-17', '-', 'spam)']
+                                    if line[-1] == 'spam)':
+                                        msgid_spam.append(line[5])
 
-# read_received_to(l)
-# read_received_from(l)
+    except TypeError as e:
+        print('###############PAUPAUPAU###################')
+        print(e)
+
+    try:
+        for file in data_list:
+            if os.path.exists('%s%s' % (log_dir, file)):
+                with gzip.open('%s%s' % (log_dir, file), 'r') as file_path:
+                    # TODO: pegar primeira e ultima linha do arquivo para determinar o periodo que o mesmo tem os registros.
+                    file_path = file_path.read()
+                    for item in file_path.splitlines():
+                        line = item.split(" ")
+                        for msgid in msgid_spam:
+                            for l in line:
+                                s = re.findall(msgid, l)
+                                if s:
+                                    for i in line:
+                                        se = re.findall('from=<', i)
+                                        if se:
+                                            rem = line[6].replace('from=<', '').replace('>,', '')
+                                            remetentes.append(rem)
+                                            if not rem in remetente:
+                                                remetente.append(rem)
+# Lista os remetentes encontrados que foram marcados como SPAM.
+        if remetentes > 0:
+            print('')
+            print('Remetentes bloqueados/descartados:')
+            print('')
+            for r in remetente:
+                c = remetentes.count(r)
+                print('%s: %s' % (r, c))
+
+    except TypeError as e:
+        print('################DEU#####################')
+        print(e)
+
+
+
+read_received_from(arquivo, 'to=<nfe3@nazaria.com.br>,')

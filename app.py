@@ -87,7 +87,7 @@ print('Email escolhido foi: %s' % m)
 
 read_gzfiles.read_received_to(file_list.list_files(inicio, final), emails[endereco_email])
 
-# read_gzfiles.read_received_from(file_list.list_files(inicio, final), emails[endereco_email])
+read_gzfiles.read_received_from(file_list.list_files(inicio, final), emails[endereco_email])
 
 t2 = time.time()
 print('')
