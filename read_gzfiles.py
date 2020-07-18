@@ -6,7 +6,7 @@ import re
 import gzip
 
 # from default_list import emails
-arquivo = ['zimbra.log.122.gz']
+# arquivo = ['zimbra.log.122.gz']
 # TODO criar metodo que selecione ao executar o e-mail que sera verificado
 # mail_address = emails[3]
 # TODO: Criar validação para DEB e RPM
@@ -134,15 +134,22 @@ def read_received_from(data_list, mail_address):
     except TypeError as e:
         print('###############PAUPAUPAU###################')
         print(e)
+<<<<<<< HEAD
     print('################OK####################')
     print(msgid_ok)
     print('################OK####################')
 # TODO criar funcao pra chamar so a lista e poupar linhas #####################
     try:
+=======
+
+    try:
+
+>>>>>>> staging
         for file in data_list:
             if os.path.exists('%s%s' % (log_dir, file)):
                 with gzip.open('%s%s' % (log_dir, file), 'r') as file_path:
                     # TODO: pegar primeira e ultima linha do arquivo para determinar o periodo que o mesmo tem os registros.
+<<<<<<< HEAD
                     file_path = file_path.read()
                     for item in file_path.splitlines():
                         line = item.split(" ")
@@ -182,27 +189,83 @@ def read_received_from(data_list, mail_address):
                             # for l in line:
                             #     count = count + 1
                             #     print('loop do l in line: %s' % count)
+=======
+                    file_path = file_path.read().splitlines()
+                    for item in file_path:
+                        for msgid in msgid_ok:
+                            z = re.findall('%s from=<' % msgid, item)
+                            if z:
+                                i = item.split(" ")
+                                rem_ok = i[6].replace('from=<', '').replace('>,', '')
+                                remetentes_ok.append(rem_ok)
+                                if not rem_ok in remetente_ok:
+                                    remetente_ok.append(rem_ok)
+
+        if remetentes_ok > 0:
+            print('')
+            print('Remetentes aceitos:')
+            print('')
+            for r in remetente_ok:
+                c = remetentes_ok.count(r)
+                print('%s: %s' % (r, c))
+
+    except TypeError as e:
+        print('################DEU#####################')
+        print(e)
+
+# TODO criar funcao pra chamar so a lista e poupar linhas #####################
+    try:
+        for file in data_list:
+            if os.path.exists('%s%s' % (log_dir, file)):
+                with gzip.open('%s%s' % (log_dir, file), 'r') as file_path:
+                    # TODO: pegar primeira e ultima linha do arquivo para determinar o periodo que o mesmo tem os registros.
+                    file_path = file_path.read()
+                    for item in file_path.splitlines():
+                        line = item.split(" ")
+###############################################################################
+                        for l in line:
+                            s = re.findall('postfix/smtp', l)
+                            if s:
+                                if mail_address in line:
+# ['Mar', '12', '20:25:24', 'zimbra', 'postfix/smtp[29929]:', 'A16F1E2897:', 'to=<nfe3@nazaria.com.br>,', 'orig_to=<ti.comunicado@nazaria.com.br>,', 'relay=127.0.0.1[127.0.0.1]:10024,', 'delay=8.9,', 'delays=2/3.4/0.01/3.6,', 'dsn=2.7.0,', 'status=sent', '(250', '2.7.0', 'Ok,', 'discarded,', 'id=29060-17', '-', 'spam)']
+                                    if line[-1] == 'spam)':
+                                        msgid_spam.append(line[5])
+    except TypeError as e:
+        print('###############PAUPAUPAU###################')
+        print(e)
+
+    try:
+        for file in data_list:
+            if os.path.exists('%s%s' % (log_dir, file)):
+                with gzip.open('%s%s' % (log_dir, file), 'r') as file_path:
+                    # TODO: pegar primeira e ultima linha do arquivo para determinar o periodo que o mesmo tem os registros.
+                    file_path = file_path.read()
+                    for item in file_path.splitlines():
+                        line = item.split(" ")
+                        for msgid in msgid_spam:
+                            for l in line:
+>>>>>>> staging
                                 # Consulta por item na lista line se existe o MAILID
                                 # Isso filtra apenas as linhas que MAILD existe dentro do arquivo.
-                                # s = re.findall(msgid, l)
-                                # if s:
-                                #     print(line)
-                                    # for i in line:
-                                    #     # Consulta se na linha existe from=<
-                                    #     se = re.findall('from=<', i)
-                                    #     if se:
-                                    #         rem_ok = line[6].replace('from=<', '').replace('>,', '')
-                                    #         remetentes_ok.append(rem_ok)
-                                    #         if not rem_ok in remetente_ok:
-                                    #             remetente_ok.append(rem_ok)
-
-        # if remetentes_ok > 0:
-        #     print('')
-        #     print('Remetentes aceitos:')
-        #     print('')
-        #     for r in remetente_ok:
-        #         c = remetentes_ok.count(r)
-        #         print('%s: %s' % (r, c))
+                                s = re.findall(msgid, l)
+                                if s:
+                                    for i in line:
+                                        # 
+                                        se = re.findall('from=<', i)
+                                        if se:
+                                            rem = line[6].replace('from=<', '').replace('>,', '')
+                                            remetentes.append(rem)
+                                            if not rem in remetente:
+                                                remetente.append(rem)
+# Lista os remetentes encontrados que foram marcados como SPAM.
+        if remetentes > 0:
+            print('')
+            print('Remetentes bloqueados/descartados:')
+            print('')
+            for r in remetente:
+                c = remetentes.count(r)
+                print('%s: %s' % (r, c))
+        print('')
 
     # except TypeError as e:
     #     print('################DEU#####################')
