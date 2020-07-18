@@ -6,7 +6,7 @@ import re
 import gzip
 
 # from default_list import emails
-arquivo = ['zimbra.log.122.gz']
+# arquivo = ['zimbra.log.122.gz']
 # TODO criar metodo que selecione ao executar o e-mail que sera verificado
 # mail_address = emails[3]
 # TODO: Criar validação para DEB e RPM
@@ -207,4 +207,4 @@ def read_received_from(data_list, mail_address):
         print(e)
 
 
-read_received_from(arquivo, 'to=<nfe3@nazaria.com.br>,')
+# read_received_from(arquivo, 'to=<nfe3@nazaria.com.br>,')
